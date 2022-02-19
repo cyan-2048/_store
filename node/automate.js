@@ -1,7 +1,10 @@
 let versions;
-let new_versions = [];
 const fs = require("fs"),
-	fetch = require("node-fetch");
+	fetch = require("node-fetch"),
+	chalk = require("chalk"),
+	AdmZip = require("adm-zip"),
+	aleCache = {},
+	suborgCache = {};
 
 fs.readFile("./versions.json", "utf8", function (err, data) {
 	if (err) throw err;
@@ -11,50 +14,70 @@ fs.readFile("./versions.json", "utf8", function (err, data) {
 	}
 });
 
+console.error = (e) => {
+	try {
+		process.stdout.write("\x07");
+	} catch (err) {
+		console.log("\x07");
+	}
+	console.log(chalk.white.bgRed(e));
+};
+console.green = (e) => {
+	console.log(chalk.black.bgGreenBright(e));
+};
+
 function init() {
-	suborgInit(() => {
-		console.log("New versions: " + JSON.stringify(new_versions) + "\n");
-		aleInit(() => {
-			console.log("New versions: " + JSON.stringify(new_versions) + "\n");
-			armaInit(() => {
-				console.log("New versions: " + JSON.stringify(new_versions));
-			});
-		});
-	});
+	let pa = "./cache/";
+	try {
+		fs.mkdirSync(pa);
+	} catch (e) {
+		fs.rmSync(pa, { recursive: true, force: true });
+		fs.mkdirSync(pa);
+	}
+	App.suborgFormat();
+	//App.armaInit(() => {
+	//	App.armaFormat(() => App.suborgInit());
+	//});
 }
 
-var armaInit, aleInit, suborgInit;
+const App = {};
+let new_versions = ["crosstweak"];
 (() => {
+	const compareVersions = require("compare-versions");
 	let index = 0;
-
-	function initStart(a) {
+	function initStart(a, c) {
 		if (index == 0) {
 			new_versions = [];
-			console.log(`Checking versions of ${a}'s apps...`);
+			let n = a == "arma7x" ? "" : "\n";
+			console.log(chalk.black[c](n + `Checking versions of ${a}'s apps...`));
 		}
 	}
+	function upStart(a) {
+		if (index == 0) console.log(chalk.white.bgBlue(`\nUpdating ${a}'s apps...`));
+	}
 	function checkErr(i, h) {
-		console.log(`error app check ver: ${i} => ` + h);
+		console.error(`error app check ver: ${i} => ` + h);
 	}
 
-	armaInit = (cb) => {
-		initStart("arma7x");
-		const apps = ["atm", "k file", "k-pocket", "k-music", "todoist", "mdx", "k-video", "the economy", "habit tracker"],
+	App.armaInit = (cb) => {
+		initStart("arma7x", "bgYellow");
+		const apps = Object.keys(versions.arma7x),
 			i = apps[index],
 			n = () => {
 				index++;
 				if (index == apps.length) {
+					console.green("Done checking for updates! => " + JSON.stringify(new_versions));
 					index = 0;
 					if (cb != undefined) cb();
 					return;
 				} else {
-					armaInit(cb);
+					App.armaInit(cb);
 				}
 			};
 		getVersion(
 			i,
 			(e) => {
-				if (e != versions[i]) {
+				if (compareVersions(versions["arma7x"][i], e) < 0) {
 					console.log(`new ver: ${i} = ${versions["arma7x"][i]} -> ${e}`);
 					new_versions.push(i);
 					n();
@@ -66,12 +89,97 @@ var armaInit, aleInit, suborgInit;
 			}
 		);
 	};
+	App.armaFormat = (cb) => {
+		if (new_versions.length == 0) {
+			cb();
+			return;
+		}
+		upStart("arma7x");
+		let dict = {
+			atm: "pocket-atm",
+			"k file": "b2gfm",
+			"k-pocket": "K-Pocket-Browser",
+			"k-music": "kaimusic",
+			todoist: "k-todoist",
+			mdx: "kai-mdx-dictionary",
+			"k-video": "k-video-player",
+			"the economy": "The-Economy",
+			habit: "kai-habit-tracker",
+		};
+		let app = new_versions[index],
+			i = dict[app],
+			pa = `./cache/${i}-master/`,
+			n = () => {
+				index++;
+				if (index == new_versions.length) {
+					console.green("Done updating arma7x's apps!!!");
+					updateVersionFile();
+					index = 0;
+					if (cb != undefined) cb();
+					return;
+				} else App.armaFormat(cb);
+			},
+			error = (e) => {
+				console.error(e);
+				n();
+			};
 
-	aleInit = (cb) => {
-		initStart("ale4710");
+		downloadFile(`https://github.com/arma7x/${i}/archive/refs/heads/master.zip`, "./cache/master.zip").then(() => {
+			unzip(
+				() => {
+					let found = false;
+					getFiles(pa).forEach((el) => {
+						function delAds(a) {
+							let d = fs.readFileSync(pa + el, "utf-8"),
+								h =
+									a === true
+										? d.replaceAll("function displayKaiAds()", "function regexVeryDumb()").replaceAll("displayKaiAds();", "")
+										: d.replaceAll(`<script src="/kaiads.v5.min.js"></script>`, "");
+							fs.writeFileSync(pa + el, h, "utf-8");
+							if (a) console.log(`ads removed: ${i}`);
+						}
+						let del = () => fs.rmSync(pa + el, { recursive: true, force: true });
+						if (/zip|application|kaiads|webmanifest|gitignore|README/s.test(el)) del();
+						if (/app\.js|index\.html/s.test(el)) {
+							if (el == "app.js") found = true;
+							delAds(el !== "index.html");
+						}
+					});
+					if (i == "kaimusic") {
+						let el = pa + "assets/js/app.js",
+							d = fs.readFileSync(el, "utf-8");
+						fs.writeFileSync(el, d.replaceAll("function displayKaiAds()", "function regexVeryDumb()").replaceAll("displayKaiAds();", ""), "utf-8");
+						console.log(`ads removed: ${i}`);
+						found = true;
+					}
+					if (!found) console.error("arma7x's app.js was not found, ads will still be present");
+					appZip(
+						pa,
+						() => {
+							let ca = "./cache/";
+							getFiles(ca).forEach((a) => {
+								fs.copyFileSync(ca + a, `../arma7x/${app}/` + a);
+								fs.rmSync(ca + a, { recursive: true, force: true });
+							});
+							getVersion(app, (v) => (versions["arma7x"][app] = v));
+							console.log("done updating: " + i);
+							n();
+						},
+						(e) => error(e),
+						"arma7x/" + app
+					);
+				},
+				(e) => error(e)
+			);
+		});
+	};
+
+	App.aleInit = (cb) => {
+		initStart("ale4710", "bgRed");
 		const arr = ["bankitube", "bakabakaplayer", "sequiviewer", "audiovis", "musmushighway"],
 			n = () => {
 				if (index == arr.length) {
+					console.green("Done checking for updates! =>" + JSON.stringify(new_versions));
 					index = 0;
 					if (cb != undefined) cb();
 				}
@@ -86,6 +194,7 @@ var armaInit, aleInit, suborgInit;
 					if (latest != i) {
 						if (/....-..-../s.test(latest)) {
 							console.log(`new ver: ${a} = ${i} -> ${latest}`);
+							aleCache[a] = latest;
 							new_versions.push(a);
 						} else checkErr(a, "err: VERSION NUMBER IS WRONG");
 					}
@@ -99,11 +208,12 @@ var armaInit, aleInit, suborgInit;
 		});
 	};
 
-	suborgInit = (cb) => {
-		initStart("suborg");
-		const arr = ["appbuster", "crosstweak", "dale-8", "fastcontact", "fastlog", "mobipico", "origami", "wallace-toolbox"],
+	App.suborgInit = (cb) => {
+		initStart("suborg", "bgGreen");
+		const arr = Object.keys(versions.suborg),
 			n = () => {
 				if (index == arr.length) {
+					console.green("Done checking for updates! => " + JSON.stringify(new_versions));
 					index = 0;
 					if (cb != undefined) cb();
 				}
@@ -116,12 +226,43 @@ var armaInit, aleInit, suborgInit;
 					index++;
 					let latest = d.version,
 						i = versions["suborg"][a];
-					if (latest != i) {
+					if (compareVersions(i, latest) < 0) {
 						console.log(`new ver: ${a} = ${i} -> ${latest}`);
+						suborgCache[a] = latest;
 						new_versions.push(a);
 					}
 					n();
 				});
+		});
+	};
+	App.suborgFormat = (cb) => {
+		let i = new_versions[index],
+			b = i == "crosstweak" ? "main" : "master",
+			pa = `./cache/${i}-${b}/`,
+			n = () => {
+				index++;
+				if (index == new_versions.length) {
+					console.green("Done updating suborg's apps!!!");
+					updateVersionFile();
+					index = 0;
+					if (cb != undefined) cb();
+					return;
+				} else App.suborgFormat(cb);
+			},
+			error = (e) => {
+				console.error(e);
+				n();
+			};
+		downloadFile(`https://gitlab.com/suborg/${i}/-/archive/${b}/${i}-${b}.zip`, "./cache/master.zip").then(() => {
+			unzip(
+				() => {
+					getFiles(pa).forEach((el) => {
+						let del = () => fs.rmSync(pa + el, { recursive: true, force: true });
+						if (/zip|application|\.sh|webmanifest|gitignore|README/s.test(el)) del();
+					});
+				},
+				(e) => error(e)
+			);
 		});
 	};
 })();
@@ -131,6 +272,66 @@ const getDirectories = (source) => {
 		.readdirSync(source, { withFileTypes: true })
 		.filter((dirent) => dirent.isDirectory())
 		.map((dirent) => dirent.name);
+};
+const getFiles = (source) => {
+	return fs
+		.readdirSync(source, { withFileTypes: true })
+		.filter((dirent) => !dirent.isDirectory())
+		.map((dirent) => dirent.name);
+};
+
+const unzip = (cb, ecb) => {
+	// the zip will always be master
+	let pa = "./cache/master.zip",
+		ca = "./cache/";
+	try {
+		var zip = new AdmZip(pa);
+		zip.extractAllTo(ca, true);
+		fs.rmSync(pa, { recursive: true, force: true });
+		zip = null;
+		// let dirs = getDirectories(ca);
+		// if (dirs[0].includes("-main")) {
+		// 	fs.renameSync(ca + dirs[0], ca + dirs[0].replace("-main", "-master"));
+		// }
+	} catch (err) {
+		if (ecb != undefined) ecb(err);
+		return;
+	}
+	if (cb != undefined) cb();
+};
+
+const appZip = (pa, cb, ecb, url) => {
+	function genURL(u) {
+		let a = [].concat(url.split("/"));
+		a[1] = encodeURIComponent(a[1]);
+		return `https://raw.githubusercontent.com/cyan-2048/_store/main/${a.join("/")}/manifest.webapp`;
+	}
+	try {
+		var appl = new AdmZip();
+		appl.addLocalFolder(pa);
+		var buffer = appl.toBuffer();
+		var appl = new AdmZip();
+		appl.addFile("application.zip", buffer);
+		appl.addFile("metadata.json", Buffer.from(`{"version": 1,"manifestURL":"${genURL(url)}"}\n`, "utf8"));
+		appl.writeZip(`./cache/${url.split("/")[1]}.zip`);
+		fs.copyFileSync(pa + "manifest.webapp", "./cache/manifest.webapp");
+		appl = null;
+		fs.rmSync(pa, { recursive: true, force: true });
+	} catch (err) {
+		if (ecb != undefined) ecb(err);
+		return;
+	}
+	if (cb != undefined) cb();
+};
+
+const downloadFile = async (url, path) => {
+	const res = await fetch(url);
+	const fileStream = fs.createWriteStream(path);
+	await new Promise((resolve, reject) => {
+		res.body.pipe(fileStream);
+		res.body.on("error", reject);
+		fileStream.on("finish", resolve);
+	});
 };
 
 let getver_cache = null;
@@ -195,4 +396,8 @@ function getVersion(g, cb, ecb) {
 			});
 		}
 	);
+}
+
+function updateVersionFile() {
+	fs.writeFileSync("./versions.json", JSON.stringify(versions, null, "\t"), "utf-8");
 }

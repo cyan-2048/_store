@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.1.3",
   "name": "MDX Dictionary",
   "description": "MDX Dictionary allows you to open MDict dictionary(mdx only) files, and you can easily search the dictionary in the app",
   "launch_path": "/index.html",
@@ -15,7 +15,7 @@
   },
   "developer": {
     "name": "arma7x",
-    "url": "https://github.com/arma7x"
+    "url": "https://www.kaiostech.com"
   },
   "origin": "app://mdict.arma7x.com",
   "type": "privileged",

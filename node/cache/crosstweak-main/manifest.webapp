@@ -1,0 +1,37 @@
+{
+  "version": "0.0.1",
+  "name": "CrossTweak",
+  "description": "A lightweight and fully public KaiOS tweaker for unprivileged usage",
+  "launch_path": "/index.html",
+  "type": "certified",
+  "icons": {
+    "56": "/icon-56.png",
+    "112": "/icon-112.png"
+  },
+  "developer": {
+    "name": "Luxferre"
+  },
+  "origin": "app://crosstweak.bananahackers.net",
+  "fullscreen": true,
+  "permissions": {
+    "external-api": {
+      "description": "Handle KaiOS 2.5.1+ devices"
+    },
+    "power": {
+      "description": "Enable priviliged factory reset capability"
+    },
+    "settings": {
+      "access": "readwrite",
+      "description": "Enable hidden settings modification"
+    },
+    "device-storage:apps": {
+      "access": "readwrite",
+      "description": "Support package installation"
+    },
+    "webapps-manage": {
+      "description": "Support package installation"
+    }
+  },
+  "theme_color": "#017ee5",
+  "cursor": "false"
+}

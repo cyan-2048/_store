@@ -1,14 +1,14 @@
 {
 	"arma7x": {
-		"atm": "1.1.0",
-		"k file": "1.5.0",
-		"k-pocket": "1.9.0",
-		"k-music": "1.11.0",
-		"todoist": "1.1.0",
-		"mdx": "1.1.0",
-		"k-video": "1.1.0",
-		"the economy": "1.1.0",
-		"habit tracker": "1.0.1"
+		"atm": "1.2.2",
+		"k file": "1.5.2",
+		"k-pocket": "1.12.0",
+		"k-music": "1.12.2",
+		"todoist": "1.2.0",
+		"mdx": "1.1.3",
+		"k-video": "1.3.2",
+		"the economy": "1.2.2",
+		"habit": "1.1.2"
 	},
 	"ale4710": {
 		"bankitube": "dif",
@@ -18,7 +18,7 @@
 		"musmushighway": "dif"
 	},
 	"suborg": {
-		"crosstweak": "0.0.1",
+		"crosstweak": "0.0.0.1",
 		"appbuster": "0.0.1",
 		"dale-8": "0.0.4",
 		"fastcontact": "0.1.9",
