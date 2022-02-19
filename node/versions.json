@@ -17,5 +17,14 @@
 		"audiovis": "dif",
 		"musmushighway": "dif"
 	},
-	"suborg": {}
+	"suborg": {
+		"crosstweak": "0.0.1",
+		"appbuster": "0.0.1",
+		"dale-8": "0.0.4",
+		"fastcontact": "0.1.9",
+		"fastlog": "0.0.9",
+		"mobipico": "0.0.2",
+		"origami": "0.0.1",
+		"wallace-toolbox": "0.0.6"
+	}
 }

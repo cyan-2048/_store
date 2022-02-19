@@ -1,6 +1,7 @@
 let versions;
 let new_versions = [];
-const fs = require("fs");
+const fs = require("fs"),
+	fetch = require("node-fetch");
 
 fs.readFile("./versions.json", "utf8", function (err, data) {
 	if (err) throw err;
@@ -11,24 +12,21 @@ fs.readFile("./versions.json", "utf8", function (err, data) {
 });
 
 function init() {
-	aleInit(() => {
-		console.log("New versions: " + JSON.stringify(new_versions));
+	suborgInit(() => {
+		console.log("New versions: " + JSON.stringify(new_versions) + "\n");
+		aleInit(() => {
+			console.log("New versions: " + JSON.stringify(new_versions) + "\n");
+			armaInit(() => {
+				console.log("New versions: " + JSON.stringify(new_versions));
+			});
+		});
 	});
 }
 
-var armaInit, aleInit;
+var armaInit, aleInit, suborgInit;
 (() => {
 	let index = 0;
-	function next(cb, func, len) {
-		index++;
-		if (index == len) {
-			if (cb != undefined) cb();
-			index = 0;
-			return;
-		} else {
-			func(cb);
-		}
-	}
+
 	function initStart(a) {
 		if (index == 0) {
 			new_versions = [];
@@ -44,7 +42,14 @@ var armaInit, aleInit;
 		const apps = ["atm", "k file", "k-pocket", "k-music", "todoist", "mdx", "k-video", "the economy", "habit tracker"],
 			i = apps[index],
 			n = () => {
-				return next(cb, armaInit, apps.length);
+				index++;
+				if (index == apps.length) {
+					index = 0;
+					if (cb != undefined) cb();
+					return;
+				} else {
+					armaInit(cb);
+				}
 			};
 		getVersion(
 			i,
@@ -64,14 +69,14 @@ var armaInit, aleInit;
 
 	aleInit = (cb) => {
 		initStart("ale4710");
-		let fetch = require("node-fetch"),
+		const arr = ["bankitube", "bakabakaplayer", "sequiviewer", "audiovis", "musmushighway"],
 			n = () => {
-				if (index == 5) {
-					cb();
+				if (index == arr.length) {
 					index = 0;
+					if (cb != undefined) cb();
 				}
 			};
-		["bankitube", "bakabakaplayer", "sequiviewer", "audiovis", "musmushighway"].forEach((a) => {
+		arr.forEach((a) => {
 			fetch(`https://alego.web.fc2.com/kaiosapps/${a}/changelog.txt`)
 				.then((data) => data.text())
 				.then((data) => {
@@ -82,13 +87,39 @@ var armaInit, aleInit;
 						if (/....-..-../s.test(latest)) {
 							console.log(`new ver: ${a} = ${i} -> ${latest}`);
 							new_versions.push(a);
-						} else checkErr(a, "VERSION NUMBER IS WRONG");
+						} else checkErr(a, "err: VERSION NUMBER IS WRONG");
 					}
 					n();
 				})
 				.catch((error) => {
 					checkErr(a, error);
 					index++;
+					n();
+				});
+		});
+	};
+
+	suborgInit = (cb) => {
+		initStart("suborg");
+		const arr = ["appbuster", "crosstweak", "dale-8", "fastcontact", "fastlog", "mobipico", "origami", "wallace-toolbox"],
+			n = () => {
+				if (index == arr.length) {
+					index = 0;
+					if (cb != undefined) cb();
+				}
+			};
+		arr.forEach((a) => {
+			let b = a == "crosstweak" ? "main" : "master";
+			fetch(`https://gitlab.com/suborg/${a}/-/raw/${b}/manifest.webapp`)
+				.then((d) => d.json())
+				.then((d) => {
+					index++;
+					let latest = d.version,
+						i = versions["suborg"][a];
+					if (latest != i) {
+						console.log(`new ver: ${a} = ${i} -> ${latest}`);
+						new_versions.push(a);
+					}
 					n();
 				});
 		});
