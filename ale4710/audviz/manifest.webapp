@@ -1,0 +1,28 @@
+{
+    "version": "1.0.92",
+    "name": "Audio Visualizer",
+    "description":"Visualize your music or voice recordings!",
+    "default_locale": "en-US",
+    "launch_path":"/index.html",
+    "theme_color": "#00AA00",
+    "type": "web",
+    "icons":{
+        "56": "/icon56.png",
+        "112": "/icon112.png"
+    },
+    "locales": {
+        "en-US": {
+            "name":"Audio Visualizer",
+            "subtitle":"Visualize your music or voice recordings!",
+            "description":"Visualize your music or voice recordings! There are 5 styles of visualization you can choose, and you can customize how the visualization looks and reacts."
+        }
+    },
+
+    "developer":{
+       "name":"ale4710",
+       "url": "https://alego.web.fc2.com/kaiosapps/audiovis/"
+    },
+    "chrome": {
+        "statusbar":"overlap"
+    }
+}

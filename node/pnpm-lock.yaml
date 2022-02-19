@@ -1,0 +1,70 @@
+lockfileVersion: 5.3
+
+specifiers:
+  hawk: ^9.0.0
+  node-fetch: '2'
+
+dependencies:
+  hawk: 9.0.0
+  node-fetch: 2.6.7
+
+packages:
+
+  /@hapi/b64/5.0.0:
+    resolution: {integrity: sha512-ngu0tSEmrezoiIaNGG6rRvKOUkUuDdf4XTPnONHGYfSGRmDqPZX5oJL6HAdKTo1UQHECbdB4OzhWrfgVppjHUw==}
+    dependencies:
+      '@hapi/hoek': 9.2.1
+    dev: false
+
+  /@hapi/boom/9.1.4:
+    resolution: {integrity: sha512-Ls1oH8jaN1vNsqcaHVYJrKmgMcKsC1wcp8bujvXrHaAqD2iDYq3HoOwsxwo09Cuda5R5nC0o0IxlrlTuvPuzSw==}
+    dependencies:
+      '@hapi/hoek': 9.2.1
+    dev: false
+
+  /@hapi/cryptiles/5.1.0:
+    resolution: {integrity: sha512-fo9+d1Ba5/FIoMySfMqPBR/7Pa29J2RsiPrl7bkwo5W5o+AN1dAYQRi4SPrPwwVxVGKjgLOEWrsvt1BonJSfLA==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      '@hapi/boom': 9.1.4
+    dev: false
+
+  /@hapi/hoek/9.2.1:
+    resolution: {integrity: sha512-gfta+H8aziZsm8pZa0vj04KO6biEiisppNgA1kbJvFrrWu9Vm7eaUEy76DIxsuTaWvti5fkJVhllWc6ZTE+Mdw==}
+    dev: false
+
+  /hawk/9.0.0:
+    resolution: {integrity: sha512-xTkUIwwAI6d5//1ofvWCDM7YYAEAo/mFqhEW7S/m9+nLZqkOzSz8lTLKk6cHvJGax3UrbljfP8P+PFPybGcxZA==}
+    dependencies:
+      '@hapi/b64': 5.0.0
+      '@hapi/boom': 9.1.4
+      '@hapi/cryptiles': 5.1.0
+      '@hapi/hoek': 9.2.1
+    dev: false
+
+  /node-fetch/2.6.7:
+    resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
+    engines: {node: 4.x || >=6.0.0}
+    peerDependencies:
+      encoding: ^0.1.0
+    peerDependenciesMeta:
+      encoding:
+        optional: true
+    dependencies:
+      whatwg-url: 5.0.0
+    dev: false
+
+  /tr46/0.0.3:
+    resolution: {integrity: sha1-gYT9NH2snNwYWZLzpmIuFLnZq2o=}
+    dev: false
+
+  /webidl-conversions/3.0.1:
+    resolution: {integrity: sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE=}
+    dev: false
+
+  /whatwg-url/5.0.0:
+    resolution: {integrity: sha1-lmRU6HZUYuN2RNNib2dCzotwll0=}
+    dependencies:
+      tr46: 0.0.3
+      webidl-conversions: 3.0.1
+    dev: false

@@ -1,0 +1,38 @@
+{
+  "version": "0.0.2",
+  "name": "OmniSD",
+  "description": "Install KaiOS apps from SD card",
+  "launch_path": "/index.html",
+  "icons": {
+    "56": "/img/icons/icon_56.png",
+    "112": "/img/icons/icon_112.png"
+  },
+  "developer": {
+    "name": "Luxferre",
+    "url": "http://831337.xyz"
+  },
+  "type": "certified",
+  "origin": "app://omnisd.831337.xyz",
+  "permissions": {
+    "device-storage:sdcard" : {
+      "description": "Required for accessing app manifest files",
+      "access": "readonly"
+    },
+    "device-storage:sdcard1" : {
+      "description": "Required for accessing app manifest files",
+      "access": "readonly"
+    },
+    "device-storage:apps":{ "access": "readwrite" },
+    "webapps-manage":{},
+    "power":{}
+  },
+  "locales": {},
+  "default_locale": "en",
+  "activities": {
+    "xyz.831337.omnisd.help": {
+      "href": "./help.html",
+      "disposition": "inline",
+      "returnValue": true
+    }
+  }
+}

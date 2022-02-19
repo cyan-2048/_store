@@ -1,0 +1,27 @@
+{
+	"name": "musmus highway",
+	"description": "musmus highway",
+	"launch_path": "/pregame.html",
+	"default_locale": "en-US",
+    "theme_color": "#009900",
+    "type": "web",
+	"version": "0.1.1",
+	"icons": {
+	  "112": "/img/icon112.png",
+	  "56": "/img/icon56.png"
+	},
+	"locales": {
+	  "en-US": {
+		  "name":"musmus highway",
+		  "subtitle":"Play a game based on your own music!",
+		  "description":"musmus highway is a game that generates levels based on the music you give it."
+	  }
+	},
+	"developer": {
+	  "name": "ale4710",
+	  "url": "https://alego.web.fc2.com/"
+	},
+    "chrome": {
+    "statusbar":"overlap"
+}
+  }

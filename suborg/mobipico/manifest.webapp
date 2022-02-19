@@ -1,0 +1,16 @@
+{
+  "version": "0.0.2",
+  "name": "MobiPICO",
+  "description": "PICO-8 emulator for KaiOS",
+  "type": "web",
+  "origin": "app://mobipico.luxferre.top",
+  "launch_path": "/index.html",
+  "orientation": ["portrait"],
+  "icons": {
+    "56": "/img/icon56.png",
+    "112": "/img/icon112.png"
+  },
+  "developer": {
+    "name": "Luxferre"
+  }
+}

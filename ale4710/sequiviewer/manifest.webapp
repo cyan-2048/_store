@@ -1,0 +1,27 @@
+{
+  "name": "sequiviewer",
+  "description": "Sequential Image Viewer for KaiOS",
+  "launch_path": "/index-before.html",
+  "default_locale": "en-US",
+  "type": "privileged",
+  "theme_color": "#FFFFFF",
+  "version": "0.0.22",
+  "icons": {
+    "112": "/img/icon112.png",
+    "56": "/img/icon56.png"
+  },
+  "locales": {
+    "en-US": {
+        "name":"sequiviewer",
+        "subtitle":"Sequential Image Viewer for KaiOS",
+        "description":"A sequential image viewer. You can read manga and comics you have on your device. It is designed for KaiOS and small screens. Do not read using your KaiOS device for a long time, as prolonged reading on a small screen can damage your eyes."
+    }
+  },
+  "developer": {
+    "name": "ale4710",
+    "url": "https://alego.web.fc2.com/kaiosapps/sequiviewer/"
+  },
+  "permissions": {
+      "device-storage:sdcard": {"access": "readonly"}
+  }
+}

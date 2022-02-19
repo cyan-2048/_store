@@ -1,0 +1,33 @@
+{
+  "version": "1.0.1",
+  "name": "Habit Tracker",
+  "description": "Habit Tracker is an app to track your daily habits or if you want to stop yourself from bad habits",
+  "launch_path": "/index.html",
+  "theme": "#873eff",
+  "theme_color": "#873eff",
+  "background_color": "#873eff",
+  "categories": [
+    "life style",
+    "lifestyle"
+  ],
+  "icons": {
+    "56": "/icons/icon56x56.png",
+    "112": "/icons/icon112x112.png"
+  },
+  "developer": {
+    "name": "arma7x",
+    "url": "https://github.com/arma7x"
+  },
+  "origin": "app://habit-tracker.arma7x.com",
+  "type": "web",
+  "permissions": {},
+  "messages": [],
+  "locales": {
+    "en-US": {
+      "name": "Habit Tracker",
+      "subtitle": "Habit Tracker is an app to track your daily habits or if you want to stop yourself from bad habits",
+      "description": "Habit Tracker is an app to track your daily habits or if you want to stop yourself from bad habits"
+    }
+  },
+  "default_locale": "en-US"
+}

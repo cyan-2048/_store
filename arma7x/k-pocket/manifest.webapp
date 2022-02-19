@@ -1,0 +1,57 @@
+{
+  "version": "1.9.0",
+  "name": "K-Pocket Browser",
+  "description": "Web Browser & Unoffical GetPocket client for KaiOS. K-Pocket Browser provide Reader View mode, parses html text(usually news and articles) and returns title & main text content without nav bars, ads, footers, or anything that isn't the main body of the text. You also can save Reader View for offline usage and read it later without internet access",
+  "launch_path": "/index.html",
+  "theme": "#873eff",
+  "theme_color": "#873eff",
+  "background_color": "#873eff",
+  "categories": [
+    "utilities"
+  ],
+  "icons": {
+    "56": "/icons/icon56x56.png",
+    "112": "/icons/icon112x112.png"
+  },
+  "cursor": false,
+  "developer": {
+    "name": "arma7x",
+    "url": "https://www.kaiostech.com"
+  },
+  "origin": "app://kpocket.arma7x.com",
+  "type": "privileged",
+  "permissions": {
+    "spatialnavigation-app-manage": {
+      "description": "Required for cursor"
+    },
+    "serviceworker": {
+      "description": "Needed for assocating service worker"
+    },
+    "browser": {
+      "description": "Required for iframe"
+    },
+    "systemXHR": {
+      "description": "Required to load remote content"
+    },
+    "sandboxed-cookies": {
+      "description": "Isolated cookies"
+    },
+    "video-capture": {
+      "description": "QR-Code reader"
+    }
+  },
+  "locales": {
+    "en-US": {
+      "name": "K-Pocket Browser",
+      "subtitle": "Web Browser with Reader View & Unoffical GetPocket client for KaiOS.",
+      "description": "Web Browser & Unoffical GetPocket client for KaiOS. K-Pocket Browser provide Reader View mode, parses html text(usually news and articles) and returns title & main text content without nav bars, ads, footers, or anything that isn't the main body of the text. You also can save Reader View for offline usage and read it later without internet access"
+    }
+  },
+  "default_locale": "en-US",
+  "redirects": [
+    {
+      "from": "https://getpocket.com/en/about",
+      "to": "/success.html"
+    }
+  ]
+}

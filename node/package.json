@@ -1,0 +1,6 @@
+{
+	"dependencies": {
+		"hawk": "^9.0.0",
+		"node-fetch": "2"
+	}
+}

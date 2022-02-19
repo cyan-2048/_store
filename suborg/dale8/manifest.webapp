@@ -1,0 +1,50 @@
+{
+  "version": "0.0.4",
+  "name": "DALE-8",
+  "description": "CHIP-8 platform emulator with extended sound engine",
+  "type": "privileged",
+  "permissions": {
+    "device-storage:sdcard":{ 
+      "access": "readonly",
+      "description": "ROM picking"
+    },
+    "volumemanager": {
+      "description": "To use native volume setting during the game"
+    }
+  },
+  "fullscreen": "true",
+  "origin": "app://dale8.luxferre.top",
+  "launch_path": "/index.html",
+  "orientation": ["portrait"],
+  "installs_allowed_from": [
+    "*"
+  ],
+  "icons": {
+    "56": "/img/icon56.png",
+    "112": "/img/icon112.png"
+  },
+  "developer": {
+    "name": "Luxferre"
+  },
+  "locales": {
+    "en-US": {
+      "name": "DALE-8",
+      "description": "CHIP-8 platform emulator with extended sound engine"
+    }
+  },
+  "default_locale": "en-US",
+  "activities": {
+    "top.luxferre.dale8.pickFile": {
+      "href": "./picker.html",
+      "disposition": "inline",
+      "returnValue": true
+    },
+    "open": {
+      "href": "./index.html?external=true",
+      "disposition": "window",
+      "filters": {
+        "type": ["application/x-bin-image", "application/x-chip8-image"]
+      }
+    }
+  }
+}

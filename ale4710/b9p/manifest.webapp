@@ -1,0 +1,34 @@
+{
+    "version": "0.3.6",
+    "name": "baka⑨player",
+    "display": "baka⑨player",
+    "short_name": "baka⑨player",
+    "subtitle":"Listen to fanmade Touhou music.",
+    "description":"A fanmade application for listening to music from Gensokyo Radio.",
+    "default_locale": "en-US",
+    "launch_path":"/index.html",
+    "type":"privileged",
+    "theme_color": "#00EEFF",
+    "icons":{
+        "56": "/img/icons/56.png",
+        "112": "/img/icons/112.png"
+    },
+    "developer":{
+       "name":"ale4710",
+       "url": "https://alego.web.fc2.com/kaiosapps/bakabakaplayer/"
+    },
+    "locales": {
+        "en-US": {
+            "name":"baka⑨player",
+            "subtitle":"Listen to fanmade Touhou music.",
+            "description":"A fanmade application for listening to Touhou music music from Gensokyo Radio."
+        }
+    },
+    "permissions":{
+        "audio-channel-content": { "description": "Lets me play music files in the background." },
+        "systemXHR": { "description": "Get metadata from gensokyoradio.net." },
+        "mobiledata":{},
+        "wifidata":{}
+    }
+
+}

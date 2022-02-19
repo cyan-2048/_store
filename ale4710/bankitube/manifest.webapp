@@ -1,0 +1,51 @@
+{
+    "version": "0.0.491",
+    "name": "BankiTube",
+    "display": "BankiTube",
+    "short_name": "BankiTube",
+    "subtitle":"Watch YouTube.",
+    "description":"Easily watch and listen to YouTube on your KaiOS device. It basically uses Invidious. The best part is that it does not use the cursor, because the cursor is a pain in the behind to use. It's called BankiTube for no special reason beside the fact I like Sekibanki.",
+    "default_locale": "en-US",
+    "launch_path":"/main-app/index.html",
+    "type":"privileged",
+    "theme_color": "#F44942",
+    "icons":{
+        "56": "/img/icon/56.png",
+        "112": "/img/icon/112.png"
+    },
+    "developer":{
+       "name":"ale4710",
+       "url": "https://alego.web.fc2.com/kaiosapps/bankitube/"
+    },
+    "locales": {
+        "en-US": {
+            "name": "BankiTube",
+            "subtitle":"Watch YouTube.",
+            "description":"Easily watch and listen to YouTube on your KaiOS device. It basically uses Invidious. The best part is that it does not use the cursor, because the cursor is a pain in the behind to use."
+        }
+    },
+    "messages": [
+        {"alarm": "/main-app/index.html"}
+    ],
+    "view": {
+        "filters": {
+            "type": "url",
+            "url": {
+                "required": true,
+                "regexp": "^https?:\\/\\/bnktb\\.((www|m)\\.)?youtube\\.com\\/(watch\\?v=|channel\\/)[a-zA-Z0-9_\\-]+$"
+            },
+            "disposition": "inline",
+            "returnValue": true,
+            "href": "/redir/index.html"
+        }
+    },
+    "permissions":{
+        "audio-channel-content": { "description": "background playback" },
+        "systemXHR": { "description": "communication" },
+        "alarms": {"description": "check stuff in the background"},
+        "desktop-notification": {"description": "notify user about stuff"},
+        "mobiledata":{},
+        "wifidata":{}
+    }
+
+}
