@@ -5,6 +5,7 @@ const fs = require("fs"),
 	AdmZip = require("adm-zip"),
 	aleCache = {},
 	suborgCache = {};
+updated = [];
 
 fs.readFile("./versions.json", "utf8", function (err, data) {
 	if (err) throw err;
@@ -34,10 +35,19 @@ function init() {
 		fs.rmSync(pa, { recursive: true, force: true });
 		fs.mkdirSync(pa);
 	}
-	App.suborgFormat();
-	//App.armaInit(() => {
-	//	App.armaFormat(() => App.suborgInit());
-	//});
+	App.armaInit(() =>
+		App.armaFormat(() =>
+			App.suborgInit(() =>
+				App.suborgFormat(() => {
+					if (updated.length != 0) {
+						var shell = require("shelljs");
+						console.green("running git!");
+						shell.exec(`git add . && git commit -m "this commit is automated! ${updated.join(", ")}"`);
+					}
+				})
+			)
+		)
+	);
 }
 
 const App = {};
@@ -57,6 +67,9 @@ let new_versions = ["crosstweak"];
 	}
 	function checkErr(i, h) {
 		console.error(`error app check ver: ${i} => ` + h);
+	}
+	function initApp(a) {
+		console.log(`start init: ${a}`);
 	}
 
 	App.armaInit = (cb) => {
@@ -91,7 +104,7 @@ let new_versions = ["crosstweak"];
 	};
 	App.armaFormat = (cb) => {
 		if (new_versions.length == 0) {
-			cb();
+			if (cb) cb();
 			return;
 		}
 		upStart("arma7x");
@@ -123,11 +136,12 @@ let new_versions = ["crosstweak"];
 				console.error(e);
 				n();
 			};
-
+		initApp(i);
 		downloadFile(`https://github.com/arma7x/${i}/archive/refs/heads/master.zip`, "./cache/master.zip").then(() => {
 			unzip(
 				() => {
-					let found = false;
+					let found = false,
+						prop = false;
 					getFiles(pa).forEach((el) => {
 						function delAds(a) {
 							let d = fs.readFileSync(pa + el, "utf-8"),
@@ -144,6 +158,7 @@ let new_versions = ["crosstweak"];
 							if (el == "app.js") found = true;
 							delAds(el !== "index.html");
 						}
+						if (el == "manifest.webapp") prop = true;
 					});
 					if (i == "kaimusic") {
 						let el = pa + "assets/js/app.js",
@@ -153,6 +168,7 @@ let new_versions = ["crosstweak"];
 						found = true;
 					}
 					if (!found) console.error("arma7x's app.js was not found, ads will still be present");
+					if (!prop) console.error("manifest.webapp not found!");
 					appZip(
 						pa,
 						() => {
@@ -161,7 +177,10 @@ let new_versions = ["crosstweak"];
 								fs.copyFileSync(ca + a, `../arma7x/${app}/` + a);
 								fs.rmSync(ca + a, { recursive: true, force: true });
 							});
-							getVersion(app, (v) => (versions["arma7x"][app] = v));
+							getVersion(app, (v) => {
+								updated.push(`${i} = ${versions.arma7x[app]} => ${v}`);
+								versions["arma7x"][app] = v;
+							});
 							console.log("done updating: " + i);
 							n();
 						},
@@ -236,6 +255,10 @@ let new_versions = ["crosstweak"];
 		});
 	};
 	App.suborgFormat = (cb) => {
+		if (new_versions.length == 0) {
+			if (cb) cb();
+			return;
+		}
 		let i = new_versions[index],
 			b = i == "crosstweak" ? "main" : "master",
 			pa = `./cache/${i}-${b}/`,
@@ -253,13 +276,33 @@ let new_versions = ["crosstweak"];
 				console.error(e);
 				n();
 			};
+		initApp(i);
 		downloadFile(`https://gitlab.com/suborg/${i}/-/archive/${b}/${i}-${b}.zip`, "./cache/master.zip").then(() => {
 			unzip(
 				() => {
+					let prop = false;
 					getFiles(pa).forEach((el) => {
 						let del = () => fs.rmSync(pa + el, { recursive: true, force: true });
 						if (/zip|application|\.sh|webmanifest|gitignore|README/s.test(el)) del();
+						if (el == "manifest.webapp") prop = true;
 					});
+					if (!prop) console.error("manifest.webapp not found!");
+					appZip(
+						pa,
+						() => {
+							let ca = "./cache/";
+							getFiles(ca).forEach((a) => {
+								fs.copyFileSync(ca + a, `../suborg/${i}/` + a);
+								fs.rmSync(ca + a, { recursive: true, force: true });
+							});
+							updated.push(`${i} = ${versions.suborg[i]} => ${suborgCache[i]}`);
+							versions.suborg[i] = suborgCache[i];
+							console.log("done updating: " + i);
+							n();
+						},
+						(e) => error(e),
+						"suborg/" + i
+					);
 				},
 				(e) => error(e)
 			);
@@ -302,7 +345,7 @@ const unzip = (cb, ecb) => {
 
 const appZip = (pa, cb, ecb, url) => {
 	function genURL(u) {
-		let a = [].concat(url.split("/"));
+		let a = url.split("/");
 		a[1] = encodeURIComponent(a[1]);
 		return `https://raw.githubusercontent.com/cyan-2048/_store/main/${a.join("/")}/manifest.webapp`;
 	}
