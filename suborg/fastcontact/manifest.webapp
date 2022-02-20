@@ -1,5 +1,5 @@
 {
-  "version": "0.1.9",
+  "version": "0.1.12",
   "name": "FastContact",
   "description": "A lightweight alternative to stock KaiOS contact list app",
   "launch_path": "/index.html",

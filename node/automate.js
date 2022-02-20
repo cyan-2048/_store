@@ -42,7 +42,7 @@ function init() {
 					if (updated.length != 0) {
 						var shell = require("shelljs");
 						console.green("running git!");
-						shell.exec(`git add . && git commit -m "this commit is automated! ${updated.join(", ")}"`);
+						shell.exec(`cd .. && git add . && git commit -m "this commit is automated! ${updated.join(", ")}"`);
 					}
 				})
 			)

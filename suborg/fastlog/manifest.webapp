@@ -1,5 +1,5 @@
 {
-  "version": "0.0.9",
+  "version": "0.0.10",
   "name": "FastLog",
   "description": "A lightweight alternative to stock KaiOS call log",
   "launch_path": "/index.html",
