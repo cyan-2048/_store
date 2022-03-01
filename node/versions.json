@@ -10,6 +10,18 @@
 		"the economy": "1.2.2",
 		"habit": "1.1.2"
 	},
+	"_comment_": "the dict is for downloading the github repos... the keys are the search query to use on the kaistore.",
+	"arma7x_dict": {
+		"atm": "pocket-atm",
+		"k file": "b2gfm",
+		"k-pocket": "K-Pocket-Browser",
+		"k-music": "kaimusic",
+		"todoist": "k-todoist",
+		"mdx": "kai-mdx-dictionary",
+		"k-video": "k-video-player",
+		"the economy": "The-Economy",
+		"habit": "kai-habit-tracker"
+	},
 	"ale4710": {
 		"bankitube": "2021-10-15",
 		"bakabakaplayer": "2021-07-14",
