@@ -520,7 +520,7 @@ function generateYML(options, cb) {
 	console.log(options);
 	if (!options) return console.error("no options");
 	const path = "../yml/" + options.name + ".yml",
-		manifest = JSON.parse(fs.readFileSync(`../arma7x/${options.name}/`, "utf-8")),
+		manifest = JSON.parse(fs.readFileSync(`../arma7x/${options.name}/manifest.webapp`, "utf-8")),
 		{ stringify } = require("yaml"),
 		obj = {};
 
