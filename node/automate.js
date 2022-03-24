@@ -1,4 +1,4 @@
-let versions;
+let versions, error_happened;
 const fs = require("fs"),
 	fetch = require("node-fetch"),
 	chalk = require("chalk"),
@@ -18,6 +18,7 @@ console.error = (e) => {
 	} catch (err) {
 		console.log("\x07");
 	}
+	error_happened = true;
 	console.log(chalk.white.bgRed(e));
 };
 let tries = 0;
@@ -77,14 +78,10 @@ function init() {
 
 function delay() {
 	fs.rmSync("./cache/", { recursive: true, force: true });
-	setTimeout(() => {
-		// nothing just to delay it for a few seconds
-	}, 5000);
+	if (error_happened) throw new EvalError("An error occured please check logs...");
 }
-let new_versions = ["bakabakaplayer"];
-const App = {};
-(() => {
-	const compareVersions = require("compare-versions");
+let new_versions = [];
+const App = (function () {
 	let index = 0;
 	function initStart(a, c) {
 		if (index == 0) {
@@ -103,7 +100,7 @@ const App = {};
 		console.log(`start init: ${a}`);
 	}
 
-	App.armaInit = (cb) => {
+	function armaInit(cb) {
 		initStart("arma7x", "bgYellow");
 		const apps = Object.keys(versions.arma7x),
 			i = apps[index],
@@ -115,13 +112,14 @@ const App = {};
 					if (cb != undefined) cb();
 					return;
 				} else {
-					App.armaInit(cb);
+					armaInit(cb);
 				}
 			};
 		getVersion(
 			i,
-			(e) => {
-				if (compareVersions(versions["arma7x"][i], e) < 0) {
+			(v) => {
+				const e = v.version;
+				if (versions["arma7x"][i] != e) {
 					console.log(`new ver: ${i} = ${versions["arma7x"][i]} -> ${e}`);
 					new_versions.push(i);
 					n();
@@ -132,8 +130,74 @@ const App = {};
 				n();
 			}
 		);
-	};
-	App.armaFormat = (cb) => {
+	}
+	function aleInit(cb) {
+		initStart("ale4710", "bgRed");
+		const arr = Object.keys(versions.ale4710),
+			n = () => {
+				if (index == arr.length) {
+					console.green("Done checking for updates! =>" + JSON.stringify(new_versions));
+					index = 0;
+					if (cb != undefined) cb();
+				}
+			};
+		arr.forEach((a) => {
+			fetch(`https://alego.web.fc2.com/kaiosapps/${a}/changelog.txt`)
+				.then((data) => data.text())
+				.then((data) => {
+					index++;
+					let latest = data.split("\n")[0].split(" ")[0],
+						i = versions["ale4710"][a];
+					if (latest != i) {
+						if (/....-..-../s.test(latest)) {
+							console.log(`new ver: ${a} = ${i} -> ${latest}`);
+							aleCache[a] = latest;
+							new_versions.push(a);
+						} else checkErr(a, "err: VERSION NUMBER IS WRONG");
+					}
+					n();
+				})
+				.catch((error) => {
+					checkErr(a, error);
+					index++;
+					n();
+				});
+		});
+	}
+	function suborgInit(cb) {
+		initStart("suborg", "bgGreen");
+		const arr = Object.keys(versions.suborg),
+			n = () => {
+				if (index == arr.length) {
+					console.green("Done checking for updates! => " + JSON.stringify(new_versions));
+					index = 0;
+					if (cb != undefined) cb();
+				}
+			};
+		arr.forEach((a) => {
+			let b = a == "crosstweak" ? "main" : "master";
+			fetch(`https://gitlab.com/suborg/${a}/-/raw/${b}/manifest.webapp`)
+				.then((d) => d.json())
+				.then((d) => {
+					index++;
+					let latest = d.version,
+						i = versions["suborg"][a];
+					console.log(latest);
+					if (i != latest) {
+						console.log(`new ver: ${a} = ${i} -> ${latest}`);
+						suborgCache[a] = latest;
+						new_versions.push(a);
+					}
+					n();
+				})
+				.catch((e) => {
+					console.error(e);
+					n();
+				});
+		});
+	}
+
+	function armaFormat(cb) {
 		if (new_versions.length == 0) {
 			if (cb) cb();
 			return;
@@ -150,7 +214,7 @@ const App = {};
 					index = 0;
 					if (cb != undefined) cb();
 					return;
-				} else App.armaFormat(cb);
+				} else armaFormat(cb);
 			},
 			error = (e) => {
 				console.error(e);
@@ -198,9 +262,19 @@ const App = {};
 									fs.copyFileSync(ca + a, `../arma7x/${app}/` + a);
 									fs.rmSync(ca + a, { recursive: true, force: true });
 								});
-								getVersion(app, (v) => {
+								getVersion(app, (e) => {
+									let v = e.version,
+										screenshots = (() => {
+											let arr = [];
+											for (const key in e.screenshots) {
+												arr.push(e.screenshots[key]);
+											}
+											return arr;
+										})();
+
 									updated.push(`${i} = ${versions.arma7x[app]} => ${v}`);
 									versions["arma7x"][app] = v;
+									generateYML({ name: app, screenshots });
 								});
 								console.log("done updating: " + i);
 								n();
@@ -213,42 +287,8 @@ const App = {};
 				);
 			})
 			.catch((e) => error(e));
-	};
-
-	App.aleInit = (cb) => {
-		initStart("ale4710", "bgRed");
-		const arr = Object.keys(versions.ale4710),
-			n = () => {
-				if (index == arr.length) {
-					console.green("Done checking for updates! =>" + JSON.stringify(new_versions));
-					index = 0;
-					if (cb != undefined) cb();
-				}
-			};
-		arr.forEach((a) => {
-			fetch(`https://alego.web.fc2.com/kaiosapps/${a}/changelog.txt`)
-				.then((data) => data.text())
-				.then((data) => {
-					index++;
-					let latest = data.split("\n")[0].split(" ")[0],
-						i = versions["ale4710"][a];
-					if (latest != i) {
-						if (/....-..-../s.test(latest)) {
-							console.log(`new ver: ${a} = ${i} -> ${latest}`);
-							aleCache[a] = latest;
-							new_versions.push(a);
-						} else checkErr(a, "err: VERSION NUMBER IS WRONG");
-					}
-					n();
-				})
-				.catch((error) => {
-					checkErr(a, error);
-					index++;
-					n();
-				});
-		});
-	};
-	App.aleFormat = (cb) => {
+	}
+	function aleFormat(cb) {
 		if (new_versions.length == 0) {
 			if (cb) cb();
 			return;
@@ -262,7 +302,7 @@ const App = {};
 					index = 0;
 					if (cb != undefined) cb();
 					return;
-				} else App.aleFormat(cb);
+				} else aleFormat(cb);
 			},
 			error = (e) => {
 				console.error(e);
@@ -320,36 +360,8 @@ const App = {};
 				});
 			})
 			.catch((e) => error(e));
-	};
-
-	App.suborgInit = (cb) => {
-		initStart("suborg", "bgGreen");
-		const arr = Object.keys(versions.suborg),
-			n = () => {
-				if (index == arr.length) {
-					console.green("Done checking for updates! => " + JSON.stringify(new_versions));
-					index = 0;
-					if (cb != undefined) cb();
-				}
-			};
-		arr.forEach((a) => {
-			let b = a == "crosstweak" ? "main" : "master";
-			fetch(`https://gitlab.com/suborg/${a}/-/raw/${b}/manifest.webapp`)
-				.then((d) => d.json())
-				.then((d) => {
-					index++;
-					let latest = d.version,
-						i = versions["suborg"][a];
-					if (compareVersions(i, latest) < 0) {
-						console.log(`new ver: ${a} = ${i} -> ${latest}`);
-						suborgCache[a] = latest;
-						new_versions.push(a);
-					}
-					n();
-				});
-		});
-	};
-	App.suborgFormat = (cb) => {
+	}
+	function suborgFormat(cb) {
 		if (new_versions.length == 0) {
 			if (cb) cb();
 			return;
@@ -365,7 +377,7 @@ const App = {};
 					index = 0;
 					if (cb != undefined) cb();
 					return;
-				} else App.suborgFormat(cb);
+				} else suborgFormat(cb);
 			},
 			error = (e) => {
 				console.error(e);
@@ -404,14 +416,24 @@ const App = {};
 				);
 			})
 			.catch((e) => error(e));
+	}
+	return {
+		armaInit,
+		armaFormat,
+		suborgInit,
+		suborgFormat,
+		aleInit,
+		aleFormat,
 	};
 })();
+
 const getDirectories = (source) => {
 	return fs
 		.readdirSync(source, { withFileTypes: true })
 		.filter((dirent) => dirent.isDirectory())
 		.map((dirent) => dirent.name);
 };
+
 const unzip = (cb, ecb, cpa) => {
 	// the zip will always be master
 	let pa = "./cache/master.zip",
@@ -422,16 +444,13 @@ const unzip = (cb, ecb, cpa) => {
 		zip.extractAllTo(ca, true);
 		fs.rmSync(pa, { recursive: true, force: true });
 		zip = null;
-		// let dirs = getDirectories(ca);
-		// if (dirs[0].includes("-main")) {
-		// 	fs.renameSync(ca + dirs[0], ca + dirs[0].replace("-main", "-master"));
-		// }
 	} catch (err) {
 		if (ecb != undefined) ecb(err);
 		return;
 	}
 	if (cb != undefined) cb();
 };
+
 const un7z = (cb, ecb, cpa) => {
 	const _7z = require("7zip-min");
 	let pa = "./cache/temp/";
@@ -476,74 +495,45 @@ const downloadFile = async (url, path) => {
 	});
 };
 
-let getver_cache = null;
-
-function getVersion(g, cb, ecb) {
-	function data(y) {
-		let wa = y.apps.find((app) => app.display.toLowerCase().includes(g));
-		if (wa !== undefined) {
-			if (cb !== undefined) cb(wa.version);
-		} else {
-			let err = "Error: APP NOT FOUND!";
-			console.error(err);
-			if (ecb != undefined) ecb(err);
-		}
-		return;
+const getVersion = (() => {
+	let versionCache = {};
+	function getVersion(g, cb, ecb) {
+		if (versionCache[g]) cb(g);
+		fetch("http://kaistone.herokuapp.com/?search=" + encodeURIComponent(g))
+			.then((e) => e.json())
+			.then((e) => {
+				versionCache[g] = e;
+				console.log(e.name + " " + e.version);
+				if (e.error) return ecb(e.error);
+				else cb(e);
+			})
+			.catch(ecb);
 	}
-	if (getver_cache !== null) {
-		data(getver_cache);
-		return;
-	}
-	function doSomething() {}
-	const Requester = require("./kaistone-requester");
-	new Requester(
-		{
-			method: "api-key",
-			key: "baJ_nea27HqSskijhZlT",
-		},
-		{
-			app: {
-				id: "CAlTn_6yQsgyJKrr-nCh",
-				name: "KaiOS Plus",
-				ver: "2.5.4",
-			},
-			server: {
-				url: "https://api.kaiostech.com",
-			},
-			ver: "3.0",
-		},
-		{
-			model: "GoFlip2",
-			imei: "123456789012345",
-			type: 999999,
-			brand: "AlcatelOneTouch",
-			os: "KaiOS",
-			version: "2.5.4",
-			ua: "Mozilla/5.0 (Mobile; GoFlip2; rv:48.0) Gecko/48.0 Firefox/48.0 KAIOS/2.5.4",
-			cu: "4044O-2BAQUS1-R",
-			mcc: "0",
-			mnc: "0",
-		},
-		(err) => {
-			tries++;
-			if (err) setTimeout(() => console.error("trying again.. tries: " + tries), (tries / 2) * 1000);
-			if (tries != 10) getVersion(g, cb, ecb);
-			else console.error("i tried and it doesn't work, don't ask affe for fix of problem...");
-		},
-		function () {
-			this.send({
-				method: "GET",
-				path: `/kc_ksfe/v1.0/apps?os=2.5.4&mcc=null&mnc=null&bookmark=false`,
-				type: "json",
-			}).then((d) => {
-				tries = 0;
-				getver_cache = d;
-				data(d);
-			});
-		}
-	);
-}
+	return getVersion;
+})();
 
 function updateVersionFile() {
 	fs.writeFileSync("./versions.json", JSON.stringify(versions, null, "\t"), "utf-8");
+}
+
+function generateYML(options, cb) {
+	console.log(options);
+	if (!options) return console.error("no options");
+	const path = "../yml/" + options.name + ".yml",
+		manifest = JSON.parse(fs.readFileSync(`../arma7x/${options.name}/`, "utf-8")),
+		{ stringify } = require("yaml"),
+		obj = {};
+
+	if (manifest.name || manifest.display) {
+		obj.name = manifest.display || manifest.name;
+	} else {
+		console.error(options.name + "manifest does not have name!");
+		obj.name = options.name;
+	}
+	if (manifest.developer) obj.author = manifest.developer;
+
+	if (manifest) {
+	}
+
+	// fs.writeFileSync(pa + el, h, "utf-8");
 }

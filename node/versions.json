@@ -7,10 +7,9 @@
 		"todoist": "1.2.0",
 		"mdx": "1.1.3",
 		"k-video": "1.3.2",
-		"the economy": "1.2.2",
 		"habit": "1.1.2"
 	},
-	"_comment_": "the dict is for downloading the github repos... the keys are the search query to use on the kaistore.",
+	"_comment_": "the dict is for downloading the github repos... the keys in arma7x are the search query to use on the kaistore.",
 	"arma7x_dict": {
 		"atm": "pocket-atm",
 		"k file": "b2gfm",
