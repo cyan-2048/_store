@@ -549,6 +549,7 @@ function generateYML(options, cb) {
 			manifest.categories.forEach((a) => {
 				switch (a) {
 					case "book/reference":
+					case "education":
 						arr.push("education");
 						break;
 					case "sports":
@@ -568,7 +569,8 @@ function generateYML(options, cb) {
 						break;
 				}
 			});
-			return [...new Set(arr)];
+			let newArr = [...new Set(arr)];
+			return newArr.length == 0 ? ["utility"] : newArr;
 		} else return ["utility"];
 	}
 
@@ -596,8 +598,6 @@ function generateYML(options, cb) {
 			manifest: (() => manifestURL || url_path + "manifest.webapp")(),
 		};
 	}
-	obj.icon = options.icon || "https://i.ibb.co/pvdJpwC/default-app-icon.png";
-	console.log(manifest, obj);
 
 	fs.writeFileSync(path, stringify(obj), "utf-8");
 }
