@@ -528,6 +528,7 @@ function generateYML(options, cb) {
 		{ stringify } = require("yaml"),
 		obj = {};
 
+	obj.icon = options.icon || "https://i.ibb.co/pvdJpwC/default-app-icon.png";
 	if (manifest.name || manifest.display) {
 		obj.name = manifest.display || manifest.name;
 	} else {
