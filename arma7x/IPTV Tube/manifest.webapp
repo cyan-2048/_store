@@ -1,0 +1,46 @@
+{
+  "version": "1.6.1",
+  "name": "IPTV Tube",
+  "description": "Watch free iptv channels from around the world on KaiOS for free",
+  "launch_path": "/index.html",
+  "theme": "#873eff",
+  "theme_color": "#873eff",
+  "background_color": "#873eff",
+  "categories": [
+    "entertainment"
+  ],
+  "icons": {
+    "56": "/icons/icon56x56.png",
+    "112": "/icons/icon112x112.png"
+  },
+  "developer": {
+    "name": "arma7x",
+    "url": "https://www.kaiostech.com"
+  },
+  "origin": "app://iptv.arma7x.com",
+  "type": "privileged",
+  "permissions": {
+    "systemXHR": {
+      "description": "Required to load remote content"
+    },
+    "device-storage:sdcard":{
+      "access": "readwrite",
+      "description": "Cache m3u file to local storage"
+    },
+    "volumemanager": {},
+    "mobiledata": {
+      "description": "China Type Approval (CTA)"
+    },
+    "wifidata": {
+      "description": "China Type Approval (CTA)"
+    }
+  },
+  "locales": {
+    "en-US": {
+      "name": "IPTV Tube",
+      "subtitle": "Watch free iptv channels from around the world on KaiOS for free",
+      "description": "Watch free iptv channels from around the world on KaiOS for free"
+    }
+  },
+  "default_locale": "en-US"
+}

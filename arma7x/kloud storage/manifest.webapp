@@ -1,0 +1,38 @@
+{
+  "version": "1.0.2",
+  "name": "Kloud Storage",
+  "description": "NO SIGNUP REQUIRED. Free file sharing service with unlimited bandwidth, upload files securely & anonymously. You also can share the file url via SMS/E-mail",
+  "launch_path": "/index.html",
+  "theme": "#873eff",
+  "theme_color": "#873eff",
+  "background_color": "#873eff",
+  "categories": [
+    "utilities"
+  ],
+  "icons": {
+    "56": "/icons/icon56x56.png",
+    "112": "/icons/icon112x112.png"
+  },
+  "developer": {
+    "name": "arma7x",
+    "url": "https://www.kaiostech.com"
+  },
+  "origin": "app://kloud-storage.arma7x.com",
+  "type": "privileged",
+  "permissions": {
+    "device-storage:sdcard":{
+      "access": "readwrite"
+    },
+    "systemXHR": {
+      "description": "Required to load remote content"
+    }
+  },
+  "locales": {
+    "en-US": {
+      "name": "Kloud Storage",
+      "subtitle": "NO SIGNUP REQUIRED. Free file sharing service with unlimited bandwidth, upload files securely & anonymously. You also can share the file url via SMS/E-mail",
+      "description": "NO SIGNUP REQUIRED. Free file sharing service with unlimited bandwidth, upload files securely & anonymously. You also can share the file url via SMS/E-mail"
+    }
+  },
+  "default_locale": "en-US"
+}

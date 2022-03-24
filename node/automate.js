@@ -4,8 +4,8 @@ const fs = require("fs"),
 	chalk = require("chalk"),
 	AdmZip = require("adm-zip"),
 	aleCache = {},
-	suborgCache = {};
-updated = [];
+	suborgCache = {},
+	updated = [];
 const getFiles = (source) => {
 	return fs
 		.readdirSync(source, { withFileTypes: true })
@@ -111,9 +111,7 @@ const App = (function () {
 					index = 0;
 					if (cb != undefined) cb();
 					return;
-				} else {
-					armaInit(cb);
-				}
+				} else armaInit(cb);
 			};
 		getVersion(
 			i,
@@ -271,10 +269,14 @@ const App = (function () {
 											}
 											return arr;
 										})();
-
 									updated.push(`${i} = ${versions.arma7x[app]} => ${v}`);
 									versions["arma7x"][app] = v;
-									generateYML({ name: app, screenshots });
+									generateYML({
+										name: app,
+										screenshots,
+										icon: e.icons[Math.max(...Object.keys(e.icons))],
+										url_path: `https://raw.githubusercontent.com/cyan-2048/_store/main/arma7x/${encodeURIComponent(app)}/`,
+									});
 								});
 								console.log("done updating: " + i);
 								n();
@@ -468,6 +470,10 @@ const appZip = (pa, cb, ecb, url) => {
 		return `https://raw.githubusercontent.com/cyan-2048/_store/main/${a.join("/")}/manifest.webapp`;
 	}
 	try {
+		let b = url.split("/");
+		fs.mkdirSync(`../${b[0]}/${b[1]}/`);
+	} catch (e) {}
+	try {
 		var appl = new AdmZip();
 		appl.addLocalFolder(pa);
 		var buffer = appl.toBuffer();
@@ -498,8 +504,8 @@ const downloadFile = async (url, path) => {
 const getVersion = (() => {
 	let versionCache = {};
 	function getVersion(g, cb, ecb) {
-		if (versionCache[g]) cb(g);
-		fetch("http://kaistone.herokuapp.com/?search=" + encodeURIComponent(g))
+		if (versionCache[g]) cb(versionCache[g]);
+		fetch("http://kaistone.herokuapp.com/?search=" + encodeURIComponent(g.toLowerCase() /*i forgor*/))
 			.then((e) => e.json())
 			.then((e) => {
 				versionCache[g] = e;
@@ -517,10 +523,9 @@ function updateVersionFile() {
 }
 
 function generateYML(options, cb) {
-	console.log(options);
 	if (!options) return console.error("no options");
-	const path = "../yml/" + options.name + ".yml",
-		manifest = JSON.parse(fs.readFileSync(`../arma7x/${options.name}/manifest.webapp`, "utf-8")),
+	const path = "../yml/" + (options.name || "unknown_app").replaceAll(" ", "_") + ".yml",
+		manifest = options.manifest || JSON.parse(fs.readFileSync(`../arma7x/${options.name}/manifest.webapp`, "utf-8")),
 		{ stringify } = require("yaml"),
 		obj = {};
 
@@ -528,12 +533,71 @@ function generateYML(options, cb) {
 		obj.name = manifest.display || manifest.name;
 	} else {
 		console.error(options.name + "manifest does not have name!");
-		obj.name = options.name;
+		obj.name = options.name || "unknown";
 	}
-	if (manifest.developer) obj.author = manifest.developer;
+	if (manifest.developer?.name) {
+		obj.author = manifest.developer.name || "unknown";
+		if (manifest.developer.website) obj.website = manifest.developer.website;
+	} else obj.author = "unknown";
 
-	if (manifest) {
+	obj.description = manifest.description || "~~";
+	obj.maintainer = "Cyan";
+
+	function decideCategory() {
+		if (manifest.categories?.length != 0) {
+			let arr = [];
+			manifest.categories.forEach((a) => {
+				switch (a) {
+					case "book/reference":
+						arr.push("education");
+						break;
+					case "sports":
+					case "games":
+						arr.push("games");
+						break;
+					case "social":
+					case "health":
+						arr.push(a);
+						break;
+					case "utilities":
+					case "life style":
+						arr.push("utility");
+						break;
+					case "entertainment":
+						arr.push("multimedia");
+						break;
+				}
+			});
+			return [...new Set(arr)];
+		} else return ["utility"];
 	}
 
-	// fs.writeFileSync(pa + el, h, "utf-8");
+	obj.has_ads = false;
+	obj.has_tracking = false;
+	obj.meta = {
+		tags: obj.name.toLowerCase().split(" ").join(";") + ";",
+		categories: decideCategory(),
+	};
+
+	if (options.screenshots?.length != 0) {
+		options.screenshots.forEach((a) => {
+			if (!obj.screenshots) obj.screenshots = [];
+			obj.screenshots.push(a);
+		});
+	}
+
+	obj.type = "packaged";
+	obj.license = options.license || "Unknown";
+
+	if (options.url_path || options.url) {
+		let { url_path, manifestURL, url, name } = options;
+		obj.download = {
+			url: (() => url || url_path + encodeURIComponent(name) + ".zip")(),
+			manifest: (() => manifestURL || url_path + "manifest.webapp")(),
+		};
+	}
+	obj.icon = options.icon || "https://i.ibb.co/pvdJpwC/default-app-icon.png";
+	console.log(manifest, obj);
+
+	fs.writeFileSync(path, stringify(obj), "utf-8");
 }

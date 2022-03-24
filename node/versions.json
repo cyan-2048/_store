@@ -7,7 +7,16 @@
 		"todoist": "1.2.0",
 		"mdx": "1.1.3",
 		"k-video": "1.3.2",
-		"habit": "1.1.2"
+		"the economy": "1.2.2",
+		"habit": "1.1.2",
+		"kloud storage": "1.0.0",
+		"Accessibility Suite": "1.0.2",
+		"Cricket Highlight": "1.0.0",
+		"IPTV Tube": "1.6.1",
+		"PoetryDB": "1.0.3",
+		"Trivia Quiz": "1.2.6",
+		"PodKast": "1.0.3",
+		"Football Highlight": "1.1.1"
 	},
 	"_comment_": "the dict is for downloading the github repos... the keys in arma7x are the search query to use on the kaistore.",
 	"arma7x_dict": {
@@ -19,7 +28,15 @@
 		"mdx": "kai-mdx-dictionary",
 		"k-video": "k-video-player",
 		"the economy": "The-Economy",
-		"habit": "kai-habit-tracker"
+		"habit": "kai-habit-tracker",
+		"kloud storage": "k-anonfiles",
+		"Accessibility Suite": "kai-accessibility-suite",
+		"Cricket Highlight": "cricket-highlight",
+		"IPTV Tube": "k-iptv-tube",
+		"PoetryDB": "kai-poetrydb",
+		"Trivia Quiz": "k-trivia-quiz",
+		"PodKast": "PodKast",
+		"Football Highlight": "kai-football-highlight"
 	},
 	"ale4710": {
 		"bankitube": "2021-10-15",
