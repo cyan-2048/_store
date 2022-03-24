@@ -509,7 +509,6 @@ const getVersion = (() => {
 			.then((e) => e.json())
 			.then((e) => {
 				versionCache[g] = e;
-				console.log(e.name + " " + e.version);
 				if (e.error) return ecb(e.error);
 				else cb(e);
 			})
@@ -537,7 +536,7 @@ function generateYML(options, cb) {
 	}
 	if (manifest.developer?.name) {
 		obj.author = manifest.developer.name || "unknown";
-		if (manifest.developer.website) obj.website = manifest.developer.url;
+		if (manifest.developer.url) obj.website = manifest.developer.url;
 	} else obj.author = "unknown";
 
 	obj.description = manifest.description || "~~";
