@@ -537,7 +537,7 @@ function generateYML(options, cb) {
 	}
 	if (manifest.developer?.name) {
 		obj.author = manifest.developer.name || "unknown";
-		if (manifest.developer.website) obj.website = manifest.developer.website;
+		if (manifest.developer.website) obj.website = manifest.developer.url;
 	} else obj.author = "unknown";
 
 	obj.description = manifest.description || "~~";
