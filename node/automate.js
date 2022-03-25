@@ -253,12 +253,10 @@ const App = (function () {
 							let del = () => fs.rmSync(currentFile, { recursive: true, force: true });
 							if (/zip|webmanifest|gitignore|README/s.test(el)) del();
 							if (el == "app.js" && i == "k-trivia-quiz") {
-								let d = fs.readFileSync(currentFile, "utf-8"),
-									url = "https://kaios.tri1.workers.dev/?url=";
-								if (d.includes(url)) {
-									d.replaceAll(url, "https://api.allorigins.win/raw?url=");
-									fs.writeFileSync(currentFile, d, "utf-8");
-								}
+								let d = fs.readFileSync(currentFile, "utf-8");
+								d.replaceAll("https://kaios.tri1.workers.dev/?url=", "https://api.allorigins.win/raw?url=");
+								fs.writeFileSync(currentFile, d, "utf-8");
+
 								// for some reason he doesn't want other people to use his heroku server?
 							}
 							if (el == "manifest.webapp") prop = true;
