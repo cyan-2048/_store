@@ -241,31 +241,22 @@ const App = (function () {
 				unzip(
 					() => {
 						let found = false,
-							prop = false;
+							prop = false,
+							ad_file = getAllFiles(pa).find((a) => a.includes("kaiads"));
+						if (ad_file) {
+							found = true;
+							fs.writeFileSync(ad_file, fs.readFileSync("./dummy_ads.js", "utf-8"), "utf-8");
+							console.log(`ads removed: ${i}`);
+						}
 						getFiles(pa).forEach((el) => {
 							let currentFile = pa + el;
-							function delAds(a) {
-								let d = fs.readFileSync(currentFile, "utf-8"),
-									h = d.replaceAll(`<script src="/kaiads.v5.min.js"></script>`, "<script>" + fs.readFileSync("./dummy_ads.js", "utf-8") + "</script>");
-								if (d == h) return console.error(`ads not found for: ${i}`);
-								fs.writeFileSync(currentFile, h, "utf-8");
-								if (a) console.log(`ads removed: ${i}`);
-							}
+							function delAds(a) {}
 							let del = () => fs.rmSync(currentFile, { recursive: true, force: true });
-							if (/zip|kaiads|webmanifest|gitignore|README/s.test(el)) del();
-							if (/index\.html/s.test(el)) {
-								found = true;
-								delAds();
-							}
+							if (/zip|webmanifest|gitignore|README/s.test(el)) del();
+
 							if (el == "manifest.webapp") prop = true;
 						});
-						if (i == "kaimusic") {
-							let el = pa + "assets/js/app.js",
-								d = fs.readFileSync(el, "utf-8");
-							fs.writeFileSync(el, d.replaceAll("function displayKaiAds()", "function regexVeryDumb()").replaceAll("displayKaiAds();", ""), "utf-8");
-							console.log(`ads removed: ${i}`);
-							found = true;
-						}
+
 						if (!found) console.error("arma7x's app.js was not found, ads will still be present");
 						if (!prop) console.error("manifest.webapp not found!");
 						appZip(
