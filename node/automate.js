@@ -1,5 +1,6 @@
 let versions, error_happened;
 const fs = require("fs"),
+	path = require("path"),
 	fetch = require("node-fetch"),
 	chalk = require("chalk"),
 	AdmZip = require("adm-zip"),
@@ -12,6 +13,22 @@ const getFiles = (source) => {
 		.filter((dirent) => !dirent.isDirectory())
 		.map((dirent) => dirent.name);
 };
+
+function getAllFiles(dir) {
+	return Array.from(
+		(function* yielder(dir) {
+			const files = fs.readdirSync(dir, { withFileTypes: true });
+			for (const file of files) {
+				if (file.isDirectory()) {
+					yield* yielder(path.join(dir, file.name));
+				} else {
+					yield path.join(dir, file.name);
+				}
+			}
+		})(dir)
+	);
+}
+
 console.error = (e) => {
 	try {
 		process.stdout.write("\x07");
@@ -226,20 +243,19 @@ const App = (function () {
 						let found = false,
 							prop = false;
 						getFiles(pa).forEach((el) => {
+							let currentFile = pa + el;
 							function delAds(a) {
-								let d = fs.readFileSync(pa + el, "utf-8"),
-									h =
-										a === true
-											? d.replaceAll("function displayKaiAds()", "function regexVeryDumb()").replaceAll("displayKaiAds();", "")
-											: d.replaceAll(`<script src="/kaiads.v5.min.js"></script>`, "");
-								fs.writeFileSync(pa + el, h, "utf-8");
+								let d = fs.readFileSync(currentFile, "utf-8"),
+									h = d.replaceAll(`<script src="/kaiads.v5.min.js"></script>`, "<script>" + fs.readFileSync("./dummy_ads.js", "utf-8") + "</script>");
+								if (d == h) return console.error(`ads not found for: ${i}`);
+								fs.writeFileSync(currentFile, h, "utf-8");
 								if (a) console.log(`ads removed: ${i}`);
 							}
-							let del = () => fs.rmSync(pa + el, { recursive: true, force: true });
-							if (/zip|application|kaiads|webmanifest|gitignore|README/s.test(el)) del();
-							if (/app\.js|index\.html/s.test(el)) {
-								if (el == "app.js") found = true;
-								delAds(el !== "index.html");
+							let del = () => fs.rmSync(currentFile, { recursive: true, force: true });
+							if (/zip|kaiads|webmanifest|gitignore|README/s.test(el)) del();
+							if (/index\.html/s.test(el)) {
+								found = true;
+								delAds();
 							}
 							if (el == "manifest.webapp") prop = true;
 						});
@@ -518,7 +534,7 @@ const getVersion = (() => {
 })();
 
 function updateVersionFile() {
-	fs.writeFileSync("./versions.json", JSON.stringify(versions, null, "\t"), "utf-8");
+	return fs.writeFileSync("./versions.json", JSON.stringify(versions, null, "\t"), "utf-8");
 }
 
 function generateYML(options, cb) {
