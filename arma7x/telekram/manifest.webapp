@@ -99,4 +99,11 @@
     "120": "/img/icons/icon120.png",
     "128": "/img/icons/icon128.png"
   }
+  "locales": {
+    "en-US": {
+      "name": "Telekram",
+      "subtitle": "bla bla bla",
+      "description": "ba bla bla"
+    }
+  }
 }
