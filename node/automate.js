@@ -263,7 +263,12 @@ const App = (function () {
 								);
 								// for some reason he doesn't want other people to use his heroku server?
 							}
-							if (el == "manifest.webapp") prop = true;
+							if (el == "manifest.webapp") {
+								prop = true;
+								let a = JSON.parse(fs.readFileSync(currentFile, "utf-8"));
+								if (!a.origin) a.origin = `app://${encodeURIComponent(a.name.toLowerCase())}_store.bananahackers.net`;
+							}
+							// yeah Affe lied, the self debug implementation does require origin
 						});
 
 						if (!found) console.error("arma7x's app.js was not found, ads will still be present");
@@ -518,7 +523,8 @@ const downloadFile = async (url, path) => {
 };
 
 const getVersion = (() => {
-	let versionCache = {};
+	let versionCache = {},
+		tries = 0;
 	function getVersion(g, cb, ecb) {
 		if (versionCache[g]) cb(versionCache[g]);
 		fetch("http://kaistone.herokuapp.com/?search=" + encodeURIComponent(g.toLowerCase() /*i forgor*/))
@@ -528,7 +534,14 @@ const getVersion = (() => {
 				if (e.error) return ecb(e.error);
 				else cb(e);
 			})
-			.catch(ecb);
+			.catch((e) => {
+				tries++;
+				if (tries == 10) getVersion(g, cb, ecb);
+				else {
+					tries == 0;
+					ecb(e);
+				}
+			});
 	}
 	return getVersion;
 })();
