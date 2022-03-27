@@ -1,73 +1,73 @@
 {
-  "version": "1.0.3",
-  "name": "PodKast",
-  "description": "With PodKast, you can play the latest episodes from your favourite shows, explore podcast recommendations just for you and manage your listening activity.",
-  "launch_path": "/index.html",
-  "theme": "#431F7F",
-  "theme_color": "#431F7F",
-  "background_color": "#431F7F",
-  "categories": [
-    "news",
-    "entertainment"
-  ],
-  "icons": {
-    "56": "/icons/icon56x56.png",
-    "112": "/icons/icon112x112.png"
-  },
-  "developer": {
-    "name": "arma7x",
-    "url": "https://www.kaiostech.com"
-  },
-  "userAgentInfo": "PodKast",
-  "origin": "app://podkast.arma7x.com",
-  "type": "privileged",
-  "permissions": {
-    "device-storage:sdcard": {
-      "access": "readwrite",
-      "description": "Store audio files on device storage"
-    },
-    "audio-channel-normal": {
-      "description": "To play audio in normal channel"
-    },
-    "audio-channel-content": {
-      "description": "To play audio in background channel"
-    },
-    "volumemanager": {
-      "description": "To control volume manager"
-    },
-    "systemXHR": {
-      "description": "Required to load remote content"
-    },
-    "tcp-socket": {
-      "description": "Check host SSL Cert(Lets Encrypt)"
-    },
-    "video-capture": {
-      "description": "Required for qr-code reader(PodcastIndex key/secret)"
-    },
-    "serviceworker": {
-      "description": "Needed for assocating service worker"
-    },
-    "desktop-notification": {
-      "description": "Required for display notification"
-    },
-    "mobiledata": {
-      "description": "China Type Approval(CTA)"
-    },
-    "wifidata": {
-      "description": "China Type Approval(CTA)"
-    }
-  },
-  "messages": [
-    {
-      "serviceworker-notification": "/index.html"
-    }
-  ],
-  "locales": {
-    "en-US": {
-      "name": "PodKast",
-      "subtitle": "With PodKast, you can play the latest episodes from your favourite shows, explore podcast recommendations just for you and manage your listening activity.",
-      "description": "With PodKast, you can play the latest episodes from your favourite shows, explore podcast recommendations just for you and manage your listening activity."
-    }
-  },
-  "default_locale": "en-US"
+	"version": "1.0.3",
+	"name": "PodKast",
+	"description": "With PodKast, you can play the latest episodes from your favourite shows, explore podcast recommendations just for you and manage your listening activity.",
+	"launch_path": "/index.html",
+	"theme": "#431F7F",
+	"theme_color": "#431F7F",
+	"background_color": "#431F7F",
+	"categories": [
+		"news",
+		"entertainment"
+	],
+	"icons": {
+		"56": "/icons/icon56x56.png",
+		"112": "/icons/icon112x112.png"
+	},
+	"developer": {
+		"name": "arma7x",
+		"url": "https://www.kaiostech.com"
+	},
+	"userAgentInfo": "PodKast",
+	"origin": "app://podkast.arma7x.com",
+	"type": "privileged",
+	"permissions": {
+		"device-storage:sdcard": {
+			"access": "readwrite",
+			"description": "Store audio files on device storage"
+		},
+		"audio-channel-normal": {
+			"description": "To play audio in normal channel"
+		},
+		"audio-channel-content": {
+			"description": "To play audio in background channel"
+		},
+		"volumemanager": {
+			"description": "To control volume manager"
+		},
+		"systemXHR": {
+			"description": "Required to load remote content"
+		},
+		"tcp-socket": {
+			"description": "Check host SSL Cert(Lets Encrypt)"
+		},
+		"video-capture": {
+			"description": "Required for qr-code reader(PodcastIndex key/secret)"
+		},
+		"serviceworker": {
+			"description": "Needed for assocating service worker"
+		},
+		"desktop-notification": {
+			"description": "Required for display notification"
+		},
+		"mobiledata": {
+			"description": "China Type Approval(CTA)"
+		},
+		"wifidata": {
+			"description": "China Type Approval(CTA)"
+		}
+	},
+	"messages": [
+		{
+			"serviceworker-notification": "/index.html"
+		}
+	],
+	"locales": {
+		"en-US": {
+			"name": "PodKast",
+			"subtitle": "With PodKast, you can play the latest episodes from your favourite shows, explore podcast recommendations just for you and manage your listening activity.",
+			"description": "With PodKast, you can play the latest episodes from your favourite shows, explore podcast recommendations just for you and manage your listening activity."
+		}
+	},
+	"default_locale": "en-US"
 }

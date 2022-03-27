@@ -267,6 +267,7 @@ const App = (function () {
 								prop = true;
 								let a = JSON.parse(fs.readFileSync(currentFile, "utf-8"));
 								if (!a.origin) a.origin = `app://${encodeURIComponent(a.name.toLowerCase())}_store.bananahackers.net`;
+								fs.writeFileSync(currentFile, JSON.stringify(a, null, "\t"), "utf-8");
 							}
 							// yeah Affe lied, the self debug implementation does require origin
 						});

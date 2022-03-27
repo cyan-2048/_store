@@ -1,34 +1,35 @@
 {
-  "version": "1.1.1",
-  "name": "Football Highlight",
-  "description": "Watch free HD football match highlights and replay extended video goals online from top leagues around the world",
-  "launch_path": "/index.html",
-  "theme": "#873eff",
-  "theme_color": "#873eff",
-  "background_color": "#873eff",
-  "categories": [
-    "sports"
-  ],
-  "icons": {
-    "56": "/icons/icon56x56.png",
-    "112": "/icons/icon112x112.png"
-  },
-  "developer": {
-    "name": "arma7x",
-    "url": "https://www.kaiostech.com"
-  },
-  "type": "web",
-  "permissions": {
-    "serviceworker": {
-      "description": "Needed for assocating service worker"
-    }
-  },
-  "locales": {
-    "en-US": {
-      "name": "Football Highlight",
-      "subtitle": "Watch free HD football match highlights and replay extended video goals online from top leagues around the world",
-      "description": "Watch free HD football match highlights and replay extended video goals online from top leagues around the world"
-    }
-  },
-  "default_locale": "en-US"
+	"version": "1.1.1",
+	"name": "Football Highlight",
+	"description": "Watch free HD football match highlights and replay extended video goals online from top leagues around the world",
+	"launch_path": "/index.html",
+	"theme": "#873eff",
+	"theme_color": "#873eff",
+	"background_color": "#873eff",
+	"categories": [
+		"sports"
+	],
+	"icons": {
+		"56": "/icons/icon56x56.png",
+		"112": "/icons/icon112x112.png"
+	},
+	"developer": {
+		"name": "arma7x",
+		"url": "https://www.kaiostech.com"
+	},
+	"type": "web",
+	"permissions": {
+		"serviceworker": {
+			"description": "Needed for assocating service worker"
+		}
+	},
+	"locales": {
+		"en-US": {
+			"name": "Football Highlight",
+			"subtitle": "Watch free HD football match highlights and replay extended video goals online from top leagues around the world",
+			"description": "Watch free HD football match highlights and replay extended video goals online from top leagues around the world"
+		}
+	},
+	"default_locale": "en-US",
+	"origin": "app://football%20highlight_store.bananahackers.net"
 }
