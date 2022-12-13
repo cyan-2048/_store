@@ -1,0 +1,11 @@
+{
+  "type": "module",
+  "dependencies": {
+    "7zip-min": "^1.4.1",
+    "adm-zip": "^0.5.9",
+    "chalk": "2.4.0",
+    "hawk": "^9.0.1",
+    "shelljs": "^0.8.5",
+    "yaml": "^2.0.0-11"
+  }
+}
